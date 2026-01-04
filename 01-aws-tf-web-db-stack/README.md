@@ -60,6 +60,10 @@ graph LR
 
 ---
 
+## CI / CD (Automation)
+
+This repository includes GitHub Actions workflows for Terraform **plan** (runs on PRs) and a manual **apply** workflow gated by a protected GitHub Environment. See `CI-CD.md` for setup, GitHub OIDC guidance, and how to provision a remote backend (S3 + DynamoDB) for state.
+
 ---
 
 ## How this will run in your environment 🔁

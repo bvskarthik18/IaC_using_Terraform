@@ -1,0 +1,44 @@
+name: "Terraform Apply (manual)"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    environment: production # configure environment and reviewers in GitHub settings to require manual approval
+    env:
+      TF_WORKING_DIR: '01-aws-tf-web-db-stack'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Configure AWS credentials (OIDC or static)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }} # optional
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          if [ -n "${{ secrets.TF_BACKEND_BUCKET }}" ]; then
+            terraform init -input=false -backend-config="bucket=${{ secrets.TF_BACKEND_BUCKET }}" -backend-config="dynamodb_table=${{ secrets.TF_BACKEND_DYNAMODB_TABLE }}" -backend-config="region=${{ secrets.AWS_REGION }}"
+          else
+            terraform init -input=false
+          fi
+
+      - name: Terraform Apply (auto-approve)
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          terraform plan -input=false -no-color -out=tfplan
+          terraform apply -input=false -auto-approve tfplan
