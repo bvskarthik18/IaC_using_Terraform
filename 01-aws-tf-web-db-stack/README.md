@@ -26,7 +26,6 @@ graph LR
   IGW[Internet Gateway]
   RT[Public Route Table]
   Pub[Public Subnet]
-  Priv[Private Subnet]
   EC2["EC2 Web Server<br/>Public Subnet<br/>Instance Profile"]
   RDS["RDS MySQL<br/>Private Subnet"]
   Secrets["Secrets Manager<br/>Stores DB credentials"]
@@ -37,7 +36,6 @@ graph LR
   IGW --> RT
   RT --> Pub
   Pub --> EC2
-  Priv --> RDS
 
   EC2 -.->|IAM/API| Secrets
   EC2 -->|3306| RDS
