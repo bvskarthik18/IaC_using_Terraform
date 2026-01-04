@@ -23,7 +23,7 @@ resource "aws_secretsmanager_secret_version" "rds_password_version" {
 # Create DB_SUBNET_GROUP for RDS Instance
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "rds_subnet_group"
-  subnet_ids = [aws_subnet.private_subnet.id]
+  subnet_ids = [aws_subnet.private_subnet.id, aws_subnet.private_subnet_2.id]
 
   tags = {
     Name = "rds_subnet_group"

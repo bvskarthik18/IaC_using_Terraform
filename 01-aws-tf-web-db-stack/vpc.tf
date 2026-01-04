@@ -14,9 +14,9 @@ resource "aws_subnet" "public_subnet" {
   tags = {
     Name = "public_subnet"
   }
-} 
+}
 
-# Create Private Subnet
+# Create Private Subnet (AZ A)
 resource "aws_subnet" "private_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = "10.0.2.0/24"
@@ -24,7 +24,17 @@ resource "aws_subnet" "private_subnet" {
   tags = {
     Name = "private_subnet"
   }
-} 
+}
+
+# Create second Private Subnet (AZ B) — required for RDS multi-AZ subnet group
+resource "aws_subnet" "private_subnet_2" {
+  vpc_id            = aws_vpc.main_vpc.id
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = data.aws_availability_zones.available.names[1]
+  tags = {
+    Name = "private_subnet_2"
+  }
+}
 
 # Create Internet Gateway
 resource "aws_internet_gateway" "igw" {
@@ -63,7 +73,7 @@ resource "aws_security_group" "ec2_sg" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.allowed_ssh_cidr] # configure to your IP/CIDR
-  } 
+  }
 
   egress {
     from_port   = 0
