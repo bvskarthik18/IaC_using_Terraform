@@ -37,6 +37,7 @@ graph LR
   IGW --> RT
   RT --> Pub
   Pub --> EC2
+  Priv --> RDS
 
   EC2 -.->|IAM/API| Secrets
   EC2 -->|3306| RDS
