@@ -22,26 +22,36 @@ It's ideal for learning Terraform, testing connectivity patterns (web → DB), a
 
 ```mermaid
 graph LR
-  Internet["Internet"]
-  IGW["Internet Gateway (igw)"]
-  RT["Public Route Table"]
-  Pub["Public Subnet (EC2)"]
-  Priv["Private Subnet (RDS)"]
-  EC2["EC2 Web Server\n(Public Subnet)\nIAM Role: Instance Profile"]
-  RDS["RDS MySQL\n(Private Subnet)"]
-  Secrets["Secrets Manager\n(stores DB credentials)"]
-  SG_WEB["Security Group (Web)"]
-  SG_DB["Security Group (DB)"]
+  Internet[Internet]
+  IGW[Internet Gateway]
+  RT[Public Route Table]
+  Pub[Public Subnet]
+  Priv[Private Subnet]
+  EC2["EC2 Web Server<br/>Public Subnet<br/>Instance Profile"]
+  RDS["RDS MySQL<br/>Private Subnet"]
+  Secrets["Secrets Manager<br/>Stores DB credentials"]
+  SG_WEB["Security Group - Web"]
+  SG_DB["Security Group - DB"]
 
   Internet --> IGW
   IGW --> RT
   RT --> Pub
   Pub --> EC2
+
   EC2 -.->|IAM/API| Secrets
-  EC2 -->|3306 (MySQL)| RDS
+  EC2 -->|3306| RDS
+
   SG_WEB -.-> EC2
   SG_DB -.-> RDS
 ```
+
+**Notes:**
+
+- **RDS** is deployed in a **private subnet** (no Internet Gateway) and should not have direct Internet access.
+- **EC2** lives in the **public subnet** and connects to RDS on **port 3306**; Security Groups are used to restrict DB access so only the web SG can reach the DB SG.
+- **Secrets Manager** stores DB credentials; the EC2 instance retrieves them via **AWS API** using an attached **IAM instance profile** — there is no network path from RDS to Secrets Manager.
+
+---
 
 **Notes:**
 
