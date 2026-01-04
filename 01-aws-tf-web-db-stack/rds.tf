@@ -35,7 +35,7 @@ resource "aws_db_instance" "rds_mysql_instance" {
   identifier             = var.db_identifier
   engine                 = "mysql"
   engine_version         = "8.0"
-  instance_class         = "db.t2.micro"
+  instance_class         = var.db_instance_class
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   allocated_storage      = 20

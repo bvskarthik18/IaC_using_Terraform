@@ -26,4 +26,10 @@ variable "allowed_ssh_cidr" {
   description = "CIDR block allowed to SSH into EC2 (set to your IP/CIDR, e.g. 203.0.113.4/32)"
   type        = string
   default     = "0.0.0.0/0"
-} 
+}
+
+variable "db_instance_class" {
+  description = "RDS instance class (choose a class that supports storage encryption)"
+  type        = string
+  default     = "db.t3.micro"
+}  
